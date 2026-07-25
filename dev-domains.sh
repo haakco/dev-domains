@@ -26,7 +26,7 @@
 
 # Single source of truth for the office/dev server list. Add a new host
 # here only; cert regeneration in each app picks it up automatically.
-KNOWN_SERVER_HOSTS=(wdev srvh01 srvh02 srvh03 dark)
+KNOWN_SERVER_HOSTS=(dev wdev srvh01 srvh02 srvh03 dark)
 
 # Resolve current shell hostname. "unknown" if hostname is unavailable.
 dev_domains::_shorthost() {

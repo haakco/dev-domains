@@ -8,7 +8,7 @@ This file is the operating guide for agents working on this repo.
 The module exposes:
 
 - `KNOWN_SERVER_HOSTS` — bash array, owned by this repo. Currently
-  `(wdev srvh01 srvh02 srvh03 dark)`.
+  `(dev wdev srvh01 srvh02 srvh03 dark)`.
 - `dev_domains::resolve` — function. Reads `BASE_DOMAIN` (required),
   `SITE_DOMAIN` (optional), and `PRIMARY_SUBDOMAIN` (optional, defaults
   to `dev`) from the caller; sets every other variable (`PRIMARY_DOMAIN`,

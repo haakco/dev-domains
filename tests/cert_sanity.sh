@@ -156,6 +156,8 @@ assert_eq "Case7 CERT_DOMAINS[0]" "tiao.haakdev.com" "${CERT_DOMAINS[0]}"
 expected_tiao=$(printf '%s\n' \
     "tiao.haakdev.com" \
     "*.tiao.haakdev.com" \
+    "dev.haakdev.com" \
+    "*.dev.haakdev.com" \
     "wdev.haakdev.com" \
     "*.wdev.haakdev.com" \
     "srvh01.haakdev.com" \

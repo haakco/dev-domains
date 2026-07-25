@@ -2,7 +2,7 @@
 
 Centralized hostname-aware DNS domain resolver for HaakCo dev stacks.
 
-> **Status:** v0.1.3 — pin a specific version in your consumer repo.
+> **Status:** v0.1.4 — pin a specific version in your consumer repo.
 
 ## What it does
 
@@ -34,7 +34,7 @@ variable (`DNS_DOMAIN`, `TRAEFIK_DOMAIN`, `EMAIL_DOMAIN`, `API_APP_URL`,
 | `TRAEFIK_HOST_REGEXP` | this module, derived | `^(dev\|wdev\|srvh01\|...\|dark)\.haakdev\.com$` | includes `site.courib.com` variants when `SITE_DOMAIN` is set |
 
 `KNOWN_SERVER_HOSTS` is owned by this module — currently
-`(wdev srvh01 srvh02 srvh03 dark)`.
+`(dev wdev srvh01 srvh02 srvh03 dark)`.
 
 ## Usage
 
@@ -73,7 +73,10 @@ against the regenerated dev cert SAN list.
 
 ## Consumer upgrade contract
 
-`v0.1.3` adds `PRIMARY_SUBDOMAIN` (optional, defaults to `dev`). Consumers
+`v0.1.4` adds `PRIMARY_SUBDOMAIN` (optional, defaults to `dev`) and `dev`
+to `KNOWN_SERVER_HOSTS` so apps with a non-`dev` primary (e.g. TiaoTiao's
+`tiao.haakdev.com`) keep routing `dev.haakdev.com` requests. Consumers
+that don't use these features see no behavior change from `v0.1.0`.
 that don't set it see no behavior change from `v0.1.0`. Consumers (TrackLab,
 CouriB, TiaoTiao) should pin a specific tag. Breaking changes to
 `dev_domains::resolve` output keys require a minor bump; new optional keys
