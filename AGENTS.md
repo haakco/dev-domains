@@ -63,19 +63,22 @@ output keys require a minor bump; new optional keys are patch-level.
 
 ## Local checkout
 
+Source: `github.com/haakco/dev-domains`.
+
 Other developers on other PCs check this out alongside the HaakCo
 sharedLib workspace:
 
 ```bash
 mkdir -p ~/Dev/HaakCo/AiProjects/sharedLib
 cd ~/Dev/HaakCo/AiProjects/sharedLib
-git clone git@github.com:haakco/dev-domains.git infra
+git clone git@github.com:haakco/dev-domains.git infra/dev-domains
+cd infra/dev-domains && git checkout v0.1.0
 ```
 
 Consumer infra scripts that reference the module:
 
 ```bash
-source "${HOME}/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains.sh"
+source "${HOME}/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains/dev-domains.sh"
 ```
 
 Or via a relative path inside the consumer repo, e.g.:
