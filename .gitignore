@@ -1,0 +1,11 @@
+# Editor / OS junk
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+*.bak
+
+# Don't accidentally commit rendered artifacts
+*.tmp
+*.log
