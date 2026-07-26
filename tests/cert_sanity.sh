@@ -7,7 +7,7 @@
 # known host pair (with wildcard), with optional *.host.SITE_DOMAIN for
 # dual-suffix apps.
 #
-# Run from any directory: bash ~/Dev/HaakCo/AiProjects/sharedLib/infra/tests/cert_sanity.sh
+# Run from any directory: bash ~/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains/tests/cert_sanity.sh
 
 set -euo pipefail
 

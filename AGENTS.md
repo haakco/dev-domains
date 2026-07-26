@@ -75,7 +75,7 @@ git clone git@github.com:haakco/dev-domains.git infra
 Consumer infra scripts that reference the module:
 
 ```bash
-source "${HOME}/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains.sh"
+source "${HOME}/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains/dev-domains.sh"
 ```
 
 Or via a relative path inside the consumer repo, e.g.:
