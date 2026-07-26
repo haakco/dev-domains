@@ -63,24 +63,41 @@ output keys require a minor bump; new optional keys are patch-level.
 
 ## Local checkout
 
+Source: `github.com/haakco/dev-domains`.
+
 Other developers on other PCs check this out alongside the HaakCo
 sharedLib workspace:
 
 ```bash
+# Linux (or macOS where Dev lives under $HOME):
 mkdir -p ~/Dev/HaakCo/AiProjects/sharedLib
 cd ~/Dev/HaakCo/AiProjects/sharedLib
-git clone git@github.com:haakco/dev-domains.git infra
+git clone git@github.com:haakco/dev-domains.git infra/dev-domains
+cd infra/dev-domains && git checkout v0.1.0
+
+# macOS with /Volumes/Dev mounted:
+mkdir -p /Volumes/Dev/HaakCo/AiProjects/sharedLib
+cd /Volumes/Dev/HaakCo/AiProjects/sharedLib
+git clone git@github.com:haakco/dev-domains.git infra/dev-domains
+cd infra/dev-domains && git checkout v0.1.0
 ```
 
-Consumer infra scripts that reference the module:
+Consumer infra scripts that reference the module. The recommended
+pattern is `DEVDOMAINS_DIR` auto-detection (TrackLab's `env-compose.sh`
+and `genDevCerts.sh` show the exact pattern), but an explicit path also
+works:
 
 ```bash
+# Recommended — auto-detect:
+source "${DEVDOMAINS_DIR}/dev-domains.sh"
+
+# Explicit (Linux):
 source "${HOME}/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains/dev-domains.sh"
-```
 
-Or via a relative path inside the consumer repo, e.g.:
+# Explicit (macOS with /Volumes/Dev mounted):
+source "/Volumes/Dev/HaakCo/AiProjects/sharedLib/infra/dev-domains/dev-domains.sh"
 
-```bash
+# Or via a relative path inside the consumer repo, e.g.:
 source "${REPO_ROOT}/shared/dev-domains.sh"
 ```
 

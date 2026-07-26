@@ -76,6 +76,29 @@ against the regenerated dev cert SAN list.
 should pin a specific tag. Breaking changes to `dev_domains::resolve`
 output keys require a minor bump; new optional keys are patch-level.
 
+## Checkout (developer machine)
+
+```bash
+# Linux (or macOS where Dev lives under $HOME):
+mkdir -p ~/Dev/HaakCo/AiProjects/sharedLib
+cd ~/Dev/HaakCo/AiProjects/sharedLib
+git clone git@github.com:haakco/dev-domains.git infra/dev-domains
+cd infra/dev-domains && git checkout v0.1.0
+
+# macOS with /Volumes/Dev mounted:
+mkdir -p /Volumes/Dev/HaakCo/AiProjects/sharedLib
+cd /Volumes/Dev/HaakCo/AiProjects/sharedLib
+git clone git@github.com:haakco/dev-domains.git infra/dev-domains
+cd infra/dev-domains && git checkout v0.1.0
+```
+
+Consumer scripts auto-detect either path; set `DEVDOMAINS_DIR` to
+override.
+
+To upgrade: bump the pin in each consumer's `infra/env-compose.sh` (and
+any other source that references the version), checkout a newer tag in
+the shared clone, and regenerate dev certs in each consumer.
+
 ## Consumers
 
 | Repo | Status |
