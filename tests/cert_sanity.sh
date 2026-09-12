@@ -44,7 +44,7 @@ source "${MODULE}"
 
 # DNS_DOMAIN depends on hostname. Default to PRIMARY when not on a known host.
 case "$(hostname -s 2>/dev/null || echo unknown)" in
-    wdev|srvh01|srvh02|srvh03|dark)
+    wdev|srvh01|srvh02|dark)
         expected_dns="$(hostname -s).haakdev.com"
         ;;
     *)
@@ -70,8 +70,6 @@ expected_tracklab=$(printf '%s\n' \
     "*.srvh01.haakdev.com" \
     "srvh02.haakdev.com" \
     "*.srvh02.haakdev.com" \
-    "srvh03.haakdev.com" \
-    "*.srvh03.haakdev.com" \
     "dark.haakdev.com" \
     "*.dark.haakdev.com" \
     | sort -u)
@@ -106,9 +104,6 @@ expected_courib=$(printf '%s\n' \
     "srvh02.courib.com" \
     "*.srvh02.courib.com" \
     "*.srvh02.site.courib.com" \
-    "srvh03.courib.com" \
-    "*.srvh03.courib.com" \
-    "*.srvh03.site.courib.com" \
     "dark.courib.com" \
     "*.dark.courib.com" \
     "*.dark.site.courib.com" \
@@ -164,8 +159,6 @@ expected_tiao=$(printf '%s\n' \
     "*.srvh01.haakdev.com" \
     "srvh02.haakdev.com" \
     "*.srvh02.haakdev.com" \
-    "srvh03.haakdev.com" \
-    "*.srvh03.haakdev.com" \
     "dark.haakdev.com" \
     "*.dark.haakdev.com" \
     | sort -u)

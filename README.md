@@ -34,7 +34,7 @@ variable (`DNS_DOMAIN`, `TRAEFIK_DOMAIN`, `EMAIL_DOMAIN`, `API_APP_URL`,
 | `TRAEFIK_HOST_REGEXP` | this module, derived | `^(dev\|wdev\|srvh01\|...\|dark)\.haakdev\.com$` | includes `site.courib.com` variants when `SITE_DOMAIN` is set |
 
 `KNOWN_SERVER_HOSTS` is owned by this module — currently
-`(dev wdev srvh01 srvh02 srvh03 dark)`.
+`(dev wdev srvh01 srvh02 dark)`.
 
 ## Usage
 
