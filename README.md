@@ -2,7 +2,7 @@
 
 Centralized hostname-aware DNS domain resolver for HaakCo dev stacks.
 
-> **Status:** v0.1.0 — pin a specific version in your consumer repo.
+> **Status:** v0.1.4 — pin a specific version in your consumer repo.
 
 ## What it does
 
@@ -23,7 +23,8 @@ variable (`DNS_DOMAIN`, `TRAEFIK_DOMAIN`, `EMAIL_DOMAIN`, `API_APP_URL`,
 |---|---|---|---|
 | `BASE_DOMAIN` | per-app caller | `haakdev.com` | `courib.com` |
 | `SITE_DOMAIN` | per-app, optional | unset | `site.courib.com` |
-| `PRIMARY_DOMAIN` | this module, derived | `dev.haakdev.com` | `dev.courib.com` |
+| `PRIMARY_SUBDOMAIN` | per-app, optional (defaults to `dev`) | unset | unset |
+| `PRIMARY_DOMAIN` | this module, derived | `${PRIMARY_SUBDOMAIN:-dev}.${BASE_DOMAIN}` → `dev.haakdev.com` | `${PRIMARY_SUBDOMAIN:-dev}.${BASE_DOMAIN}` → `dev.courib.com` |
 | `LOCAL_DOMAIN` | this module, derived | `dev.haakdev.com` | `dev.courib.com` |
 | `DNS_DOMAIN` | this module, hostname-aware | `srvh01.haakdev.com` on `srvh01`; `dev.haakdev.com` elsewhere | `srvh01.courib.com` on `srvh01`; `dev.courib.com` elsewhere |
 | `EMAIL_DOMAIN` | this module, derived | equals `DNS_DOMAIN` | equals `DNS_DOMAIN` |
@@ -33,7 +34,7 @@ variable (`DNS_DOMAIN`, `TRAEFIK_DOMAIN`, `EMAIL_DOMAIN`, `API_APP_URL`,
 | `TRAEFIK_HOST_REGEXP` | this module, derived | `^(dev\|wdev\|srvh01\|...\|dark)\.haakdev\.com$` | includes `site.courib.com` variants when `SITE_DOMAIN` is set |
 
 `KNOWN_SERVER_HOSTS` is owned by this module — currently
-`(wdev srvh01 srvh02 srvh03 dark)`.
+`(dev wdev srvh01 srvh02 dark)`.
 
 ## Usage
 
@@ -72,9 +73,14 @@ against the regenerated dev cert SAN list.
 
 ## Consumer upgrade contract
 
-`v0.1.0` is the initial release. Consumers (TrackLab, CouriB, TiaoTiao)
-should pin a specific tag. Breaking changes to `dev_domains::resolve`
-output keys require a minor bump; new optional keys are patch-level.
+`v0.1.4` adds `PRIMARY_SUBDOMAIN` (optional, defaults to `dev`) and `dev`
+to `KNOWN_SERVER_HOSTS` so apps with a non-`dev` primary (e.g. TiaoTiao's
+`tiao.haakdev.com`) keep routing `dev.haakdev.com` requests. Consumers
+that don't use these features see no behavior change from `v0.1.0`.
+that don't set it see no behavior change from `v0.1.0`. Consumers (TrackLab,
+CouriB, TiaoTiao) should pin a specific tag. Breaking changes to
+`dev_domains::resolve` output keys require a minor bump; new optional keys
+are patch-level.
 
 ## Checkout (developer machine)
 

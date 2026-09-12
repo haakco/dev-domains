@@ -44,7 +44,7 @@ source "${MODULE}"
 
 # DNS_DOMAIN depends on hostname. Default to PRIMARY when not on a known host.
 case "$(hostname -s 2>/dev/null || echo unknown)" in
-    wdev|srvh01|srvh02|srvh03|dark)
+    wdev|srvh01|srvh02|dark)
         expected_dns="$(hostname -s).haakdev.com"
         ;;
     *)
@@ -70,8 +70,6 @@ expected_tracklab=$(printf '%s\n' \
     "*.srvh01.haakdev.com" \
     "srvh02.haakdev.com" \
     "*.srvh02.haakdev.com" \
-    "srvh03.haakdev.com" \
-    "*.srvh03.haakdev.com" \
     "dark.haakdev.com" \
     "*.dark.haakdev.com" \
     | sort -u)
@@ -106,9 +104,6 @@ expected_courib=$(printf '%s\n' \
     "srvh02.courib.com" \
     "*.srvh02.courib.com" \
     "*.srvh02.site.courib.com" \
-    "srvh03.courib.com" \
-    "*.srvh03.courib.com" \
-    "*.srvh03.site.courib.com" \
     "dark.courib.com" \
     "*.dark.courib.com" \
     "*.dark.site.courib.com" \
@@ -137,6 +132,46 @@ actual=$(BASE_DOMAIN="haakdev.com" bash "${MODULE}" dump-cert-domains)
 assert_eq "dump-cert-domains matches resolve CERT_DOMAINS" "${expected}" "${actual}"
 
 # -----------------------------------------------------------------------------
+# Case 7: PRIMARY_SUBDOMAIN overrides default "dev"
+#
+# Apps whose canonical dev hostname is not "dev.<base>" (e.g. TiaoTiao uses
+# "tiao.haakdev.com") set PRIMARY_SUBDOMAIN=tiao and expect every derived
+# variable to reflect that.
+# -----------------------------------------------------------------------------
+unset SITE_DOMAIN
+export BASE_DOMAIN="haakdev.com"
+export PRIMARY_SUBDOMAIN="tiao"
+source "${MODULE}"
+dev_domains::resolve
+
+assert_eq "Case7 PRIMARY_DOMAIN" "tiao.haakdev.com" "${PRIMARY_DOMAIN}"
+assert_eq "Case7 LOCAL_DOMAIN"  "tiao.haakdev.com" "${LOCAL_DOMAIN}"
+assert_eq "Case7 CERT_DOMAINS[0]" "tiao.haakdev.com" "${CERT_DOMAINS[0]}"
+
+expected_tiao=$(printf '%s\n' \
+    "tiao.haakdev.com" \
+    "*.tiao.haakdev.com" \
+    "dev.haakdev.com" \
+    "*.dev.haakdev.com" \
+    "wdev.haakdev.com" \
+    "*.wdev.haakdev.com" \
+    "srvh01.haakdev.com" \
+    "*.srvh01.haakdev.com" \
+    "srvh02.haakdev.com" \
+    "*.srvh02.haakdev.com" \
+    "dark.haakdev.com" \
+    "*.dark.haakdev.com" \
+    | sort -u)
+actual_tiao=$(printf '%s\n' "${CERT_DOMAINS[@]}" | sort -u)
+assert_eq "Case7 CERT_DOMAINS" "${expected_tiao}" "${actual_tiao}"
+
+# TRAEFIK_HOST_REGEXP must include the per-app primary.
+case "${TRAEFIK_HOST_REGEXP}" in
+    *tiao.haakdev.com*) ;;
+    *) fail "Case7 TRAEFIK_HOST_REGEXP must include tiao.haakdev.com, got: ${TRAEFIK_HOST_REGEXP}" ;;
+esac
+
+# -----------------------------------------------------------------------------
 # Case 6: hostname=unknown fallback (hostname -s failure)
 # -----------------------------------------------------------------------------
 # Run in a clean subshell with hostname stubbed to failure. The resolver
@@ -146,6 +181,7 @@ assert_eq "dump-cert-domains matches resolve CERT_DOMAINS" "${expected}" "${actu
 actual=$(
     hostname() { return 1; }
     export -f hostname
+    unset PRIMARY_SUBDOMAIN
     BASE_DOMAIN="haakdev.com" \
     SITE_DOMAIN="" \
     bash -c '

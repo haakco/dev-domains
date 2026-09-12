@@ -8,12 +8,15 @@ This file is the operating guide for agents working on this repo.
 The module exposes:
 
 - `KNOWN_SERVER_HOSTS` — bash array, owned by this repo. Currently
-  `(wdev srvh01 srvh02 srvh03 dark)`.
-- `dev_domains::resolve` — function. Reads `BASE_DOMAIN` (required) and
-  `SITE_DOMAIN` (optional) from the caller; sets every other variable
-  (`PRIMARY_DOMAIN`, `LOCAL_DOMAIN`, `DNS_DOMAIN`, `EMAIL_DOMAIN`,
-  `TRAEFIK_DOMAIN`, `API_APP_URL`, `API_FRONTEND_URL`, `CERT_DOMAINS`,
-  `TRAEFIK_HOST_REGEXP`). Idempotent.
+  `(dev wdev srvh01 srvh02 dark)`.
+- `dev_domains::resolve` — function. Reads `BASE_DOMAIN` (required),
+  `SITE_DOMAIN` (optional), and `PRIMARY_SUBDOMAIN` (optional, defaults
+  to `dev`) from the caller; sets every other variable (`PRIMARY_DOMAIN`,
+  `LOCAL_DOMAIN`, `DNS_DOMAIN`, `EMAIL_DOMAIN`, `TRAEFIK_DOMAIN`,
+  `API_APP_URL`, `API_FRONTEND_URL`, `CERT_DOMAINS`, `TRAEFIK_HOST_REGEXP`).
+  Idempotent. Apps whose canonical dev hostname is not `dev.<base>` (e.g.
+  TiaoTiao sets `PRIMARY_SUBDOMAIN=tiao`) get a per-app `PRIMARY_DOMAIN`
+  without the rest of the module caring which subdomain the caller picked.
 - `dev_domains::cors_hosts` — function. Prints the comma-separated host
   list for use in `API_CORS_FRONTEND_URLS` style variables.
 - `dump-cert-domains` — when the file is executed (not sourced) with
@@ -34,7 +37,7 @@ The module exposes:
 bash tests/cert_sanity.sh
 ```
 
-Six cases:
+Six cases plus the `PRIMARY_SUBDOMAIN` override:
 
 1. TrackLab (single suffix): `BASE_DOMAIN=haakdev.com`, no `SITE_DOMAIN`.
 2. CouriB (dual suffix): `BASE_DOMAIN=courib.com`,
@@ -44,6 +47,8 @@ Six cases:
 5. `dev_domains::resolve` exits 1 when `BASE_DOMAIN` is missing.
 6. `hostname=unknown` fallback (stubbed `hostname` returning 1) →
    `DNS_DOMAIN=PRIMARY_DOMAIN`.
+7. `PRIMARY_SUBDOMAIN=tiao` overrides default and produces the matching
+   `tiao.haakdev.com` cert SAN list and Traefik regex.
 
 ## Versioning
 

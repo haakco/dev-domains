@@ -7,11 +7,15 @@
 # sources this file, and calls `dev_domains::resolve`.
 #
 # Conventions:
-#   BASE_DOMAIN   — required. e.g. "haakdev.com", "courib.com".
-#   SITE_DOMAIN   — optional. e.g. "site.courib.com" for apps with a separate
-#                   site alongside the API. Unset for TrackLab/TiaoTiao.
-#   PRIMARY_DOMAIN — always "dev.${BASE_DOMAIN}". Always first in CERT_DOMAINS
-#                    so certbot writes to /live/${PRIMARY_DOMAIN}.
+#   BASE_DOMAIN    — required. e.g. "haakdev.com", "courib.com".
+#   SITE_DOMAIN    — optional. e.g. "site.courib.com" for apps with a separate
+#                    site alongside the API. Unset for TrackLab/TiaoTiao.
+#   PRIMARY_SUBDOMAIN — optional, defaults to "dev". Override per-app when
+#                    the canonical dev hostname is not "dev.<base>" (e.g.
+#                    TiaoTiao sets this to "tiao" so PRIMARY_DOMAIN becomes
+#                    "tiao.haakdev.com" instead of "dev.haakdev.com").
+#   PRIMARY_DOMAIN — "${PRIMARY_SUBDOMAIN}.${BASE_DOMAIN}". Always first in
+#                    CERT_DOMAINS so certbot writes to /live/${PRIMARY_DOMAIN}.
 #   LOCAL_DOMAIN  — equal to PRIMARY_DOMAIN.
 #   DNS_DOMAIN    — "${SHORTHOST}.${BASE_DOMAIN}" when current hostname is
 #                   in KNOWN_SERVER_HOSTS, else PRIMARY_DOMAIN.
@@ -22,7 +26,7 @@
 
 # Single source of truth for the office/dev server list. Add a new host
 # here only; cert regeneration in each app picks it up automatically.
-KNOWN_SERVER_HOSTS=(wdev srvh01 srvh02 srvh03 dark)
+KNOWN_SERVER_HOSTS=(dev wdev srvh01 srvh02 dark)
 
 # Resolve current shell hostname. "unknown" if hostname is unavailable.
 dev_domains::_shorthost() {
@@ -44,7 +48,8 @@ dev_domains::resolve() {
         return 1
     fi
 
-    PRIMARY_DOMAIN="dev.${BASE_DOMAIN}"
+    PRIMARY_SUBDOMAIN="${PRIMARY_SUBDOMAIN:-dev}"
+    PRIMARY_DOMAIN="${PRIMARY_SUBDOMAIN}.${BASE_DOMAIN}"
     LOCAL_DOMAIN="${PRIMARY_DOMAIN}"
 
     local shorthost
