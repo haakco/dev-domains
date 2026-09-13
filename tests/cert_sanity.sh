@@ -44,7 +44,7 @@ source "${MODULE}"
 
 # DNS_DOMAIN depends on hostname. Default to PRIMARY when not on a known host.
 case "$(hostname -s 2>/dev/null || echo unknown)" in
-    wdev|srvh01|srvh02|dark)
+    wdev|srvh01|srvh02|dark|mini)
         expected_dns="$(hostname -s).haakdev.com"
         ;;
     *)
@@ -60,7 +60,8 @@ assert_eq "TrackLab TRAEFIK_DOMAIN" "traefik.${expected_dns}" "${TRAEFIK_DOMAIN}
 assert_eq "TrackLab API_APP_URL"   "https://${expected_dns}" "${API_APP_URL}"
 assert_eq "TrackLab DNS_DOMAIN" "${expected_dns}" "${DNS_DOMAIN}"
 
-# CERT_DOMAINS shape: PRIMARY_DOMAIN, *.PRIMARY_DOMAIN, then five (host, *.host) pairs.
+# CERT_DOMAINS shape: PRIMARY_DOMAIN, *.PRIMARY_DOMAIN, then each known host's
+# (host, *.host) pair.
 expected_tracklab=$(printf '%s\n' \
     "dev.haakdev.com" \
     "*.dev.haakdev.com" \
@@ -72,6 +73,8 @@ expected_tracklab=$(printf '%s\n' \
     "*.srvh02.haakdev.com" \
     "dark.haakdev.com" \
     "*.dark.haakdev.com" \
+    "mini.haakdev.com" \
+    "*.mini.haakdev.com" \
     | sort -u)
 actual_tracklab=$(printf '%s\n' "${CERT_DOMAINS[@]}" | sort -u)
 assert_eq "TrackLab CERT_DOMAINS" "${expected_tracklab}" "${actual_tracklab}"
@@ -107,6 +110,9 @@ expected_courib=$(printf '%s\n' \
     "dark.courib.com" \
     "*.dark.courib.com" \
     "*.dark.site.courib.com" \
+    "mini.courib.com" \
+    "*.mini.courib.com" \
+    "*.mini.site.courib.com" \
     | sort -u)
 actual_courib=$(printf '%s\n' "${CERT_DOMAINS[@]}" | sort -u)
 assert_eq "CouriB CERT_DOMAINS" "${expected_courib}" "${actual_courib}"
@@ -161,6 +167,8 @@ expected_tiao=$(printf '%s\n' \
     "*.srvh02.haakdev.com" \
     "dark.haakdev.com" \
     "*.dark.haakdev.com" \
+    "mini.haakdev.com" \
+    "*.mini.haakdev.com" \
     | sort -u)
 actual_tiao=$(printf '%s\n' "${CERT_DOMAINS[@]}" | sort -u)
 assert_eq "Case7 CERT_DOMAINS" "${expected_tiao}" "${actual_tiao}"
